@@ -108,16 +108,14 @@ hamsterGroup.rotation.set(0, Math.PI / 8, 0);
 scene.add(hamsterGroup);
 
 const bodyGeometry = new THREE.BoxGeometry(2, 2, 2);
-
 const bodyMaterials = [
-    new THREE.MeshPhongMaterial({ map: hamsterside }),    // Right
-    new THREE.MeshPhongMaterial({ map: hamsterside }),    // Left
-    new THREE.MeshPhongMaterial({ map: hamstertopback }), // Top
-    new THREE.MeshPhongMaterial({ map: hamstertopback }),    // Bottom
-    new THREE.MeshPhongMaterial({ map: happyTexture }),   // Front (Face)
-    new THREE.MeshPhongMaterial({ map: hamstertopback })  // Back
+    new THREE.MeshPhongMaterial({ map: hamsterside }),
+    new THREE.MeshPhongMaterial({ map: hamsterside }),
+    new THREE.MeshPhongMaterial({ map: hamstertopback }),
+    new THREE.MeshPhongMaterial({ map: hamstertopback }),
+    new THREE.MeshPhongMaterial({ map: happyTexture }),
+    new THREE.MeshPhongMaterial({ map: hamstertopback })
 ];
-
 const hamsterBody = new THREE.Mesh(bodyGeometry, bodyMaterials);
 hamsterBody.castShadow = true;
 hamsterBody.receiveShadow = true;
@@ -146,7 +144,6 @@ rightEar.position.set(-0.6, 1.1, 0.4);
 rightEar.rotation.z = Math.PI / 8;
 hamsterGroup.add(rightEar);
 
-//Font
 const fontLoader = new FontLoader();
 fontLoader.load('./THREEjs/examples/fonts/helvetiker_bold.typeface.json', function (font){
     const textGeometry = new TextGeometry('OVerlord', {
@@ -155,7 +152,7 @@ fontLoader.load('./THREEjs/examples/fonts/helvetiker_bold.typeface.json', functi
         height: 0.2,
         curveSegments: 12,
         bevelEnabled: false
-    }); //Text
+    });
     const textMaterial = new THREE.MeshStandardMaterial({color: 0xFFFFFF})
     const textMesh = new THREE.Mesh(textGeometry, textMaterial)
     textMesh.position.set(-6,4,5)
@@ -204,7 +201,6 @@ gltfLoader.load(
 darkWarrior.position.set(0, 0, 3);
 darkWarrior.rotation.set(0, Math.PI / 2, 0);
 
-// Spells
 const spellGroup = new THREE.Group();
 spellGroup.visible = false; 
 darkWarrior.add(spellGroup); 
@@ -223,7 +219,6 @@ const spellMat = new THREE.MeshPhongMaterial({
     side: THREE.DoubleSide
 });
 
-//Rings
 const innerRingGeometry = new THREE.RingGeometry(1, 1.2, 64);
 const innerRing = new THREE.Mesh(innerRingGeometry, spellMat);
 innerRing.rotation.x = -Math.PI / 2;
@@ -236,7 +231,6 @@ outerRing.rotation.x = -Math.PI / 2;
 outerRing.position.y = 0.02;
 spellGroup.add(outerRing);
 
-// Pointers
 const pointerGeometry = new THREE.BoxGeometry(0.05, 4, 0.01);
 const pointer1 = new THREE.Mesh(pointerGeometry, spellMat);
 pointer1.rotation.x = -Math.PI / 2;
@@ -249,7 +243,6 @@ pointer2.rotation.x = -Math.PI / 2;
 pointer2.position.y = 0.01;
 spellGroup.add(pointer2);
 
-//Controls
 const keys = { w: false, a: false, s: false, d: false, q: false, e: false };
 const moveSpeed = 0.1;
 const rotSpeed = 0.05;
@@ -269,8 +262,6 @@ window.addEventListener('keyup', (e) => {
     if (keys.hasOwnProperty(key)) keys[key] = false;
 });
 
-
-// Raycaster
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -330,7 +321,4 @@ function animate() {
         controls.update();
     }
     renderer.render(scene, activeCamera);
-}
-
-// Start
-animate();
+}animate();
