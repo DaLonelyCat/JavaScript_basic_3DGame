@@ -50,7 +50,10 @@ You do not need a complex build environment to run this project.
 
 ### 💻 Usage
 
-Once opened, use your keyboard (usually **W/A/S/D** or **Arrow Keys**) to control the player's movement and explore the map.
+Once opened, use your keyboard (**W/A/S/D** ) to control the player's movement and explore the map.
+Press **C** to change camera view
+Press **Space** to toggle hit area
+Click on hamster to immit pain
 
 ---
 
