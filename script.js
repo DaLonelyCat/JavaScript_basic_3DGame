@@ -10,23 +10,24 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 document.body.appendChild(renderer.domElement)
-
 const scene = new THREE.Scene()
 
+//cameras & camera controls
 const cameraTPV = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,1000)
 cameraTPV.position.set(6,3,5)
 cameraTPV.lookAt(0,0,0)
 
 const cameraFPV = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,1000)
-
 let activeCamera = cameraTPV
 
 const controls = new OrbitControls(cameraTPV, renderer.domElement);
 controls.enableDamping = true;
 controls.target.set(0, 0, 0);
 
+//lights
 const ambientlight = new THREE.AmbientLight(0xffffff,0.7)
 scene.add(ambientlight)
+
 const spotlight = new THREE.SpotLight(0xffffff,1.2)
 spotlight.position.set(0, 10, 0);
 spotlight.castShadow = true;
@@ -39,6 +40,7 @@ const directionalLight = new THREE.DirectionalLight(0xFFFEEE, 0.5)
 directionalLight.position.set(5, 2, 8);
 scene.add(directionalLight)
 
+//Asset Loaders
 const txtrLoader = new THREE.TextureLoader()
 const groundTxtr = txtrLoader.load('./assets/textures/grass/rocky_terrain_02_diff_1k.jpg')
 const barkTexture = txtrLoader.load('./assets/textures/tree/chinese_cedar_bark_diff_1k.jpg');
@@ -58,18 +60,19 @@ const skyboxTexture = skyboxLoader.load([
     './assets/skybox/posz.jpg',
 ]);
 scene.background = skyboxTexture;
+scene.environment = skyboxTexture;//supaya dark warrior ga hitam
 
-
+//Objects Creation (Floor, Trees, ETC..)
 const groundGeometry = new THREE.BoxGeometry(25,2,25)
 const groundMaterial = new THREE.MeshStandardMaterial({color: 0xFFFFFF, map:groundTxtr})
 const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial)
 groundMesh.position.set(0,-1,0)
 groundMesh.receiveShadow = true;
 groundMesh.castShadow = false;
-
 scene.add(groundMesh)
 
-function createTree(x, z) {
+
+function createTree(x, z) { //Function for creating trees at specified (x, z) coordinates
     const treeGroup = new THREE.Group();
     const trunkGeometry = new THREE.CylinderGeometry(0.6, 0.6, 3);
     const trunkMat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, map: barkTexture });
@@ -97,10 +100,10 @@ function createTree(x, z) {
     treeGroup.position.set(x, 0, z);
     scene.add(treeGroup);
 }
-
 createTree(-5, -5);
 createTree(7, -6);
 createTree(-8, 8);
+
 
 const hamsterGroup = new THREE.Group();
 hamsterGroup.position.set(3, 1, -1);
@@ -116,6 +119,8 @@ const bodyMaterials = [
     new THREE.MeshPhongMaterial({ map: happyTexture }),
     new THREE.MeshPhongMaterial({ map: hamstertopback })
 ];
+
+//Hamster Creation
 const hamsterBody = new THREE.Mesh(bodyGeometry, bodyMaterials);
 hamsterBody.castShadow = true;
 hamsterBody.receiveShadow = true;
@@ -144,6 +149,7 @@ rightEar.position.set(-0.6, 1.1, 0.4);
 rightEar.rotation.z = Math.PI / 8;
 hamsterGroup.add(rightEar);
 
+//OverLord text creation
 const fontLoader = new FontLoader();
 fontLoader.load('./THREEjs/examples/fonts/helvetiker_bold.typeface.json', function (font){
     const textGeometry = new TextGeometry('OVerlord', {
@@ -162,21 +168,15 @@ fontLoader.load('./THREEjs/examples/fonts/helvetiker_bold.typeface.json', functi
     scene.add(textMesh)
 });
 
-let darkWarrior = new THREE.Group()
+//DarkWarrior creation
+let darkWarrior = new THREE.Group() 
 scene.add(darkWarrior)
-const placeholderGeometry = new THREE.BoxGeometry(0.5, 1.8, 0.5);
-const placeholderMat = new THREE.MeshStandardMaterial({ color: 0xaa0000 });
-const placeholderMesh = new THREE.Mesh(placeholderGeometry, placeholderMat);
-placeholderMesh.position.y = 0.9;
-placeholderMesh.castShadow = true;
-darkWarrior.add(placeholderMesh);
+
 
 const gltfLoader = new GLTFLoader();
-
 gltfLoader.load(
     './assets/models/momonga_ainz_ooal_gown/scene.gltf',
-    (gltf) => {
-        darkWarrior.remove(placeholderMesh);
+    (gltf) => { 
         const model = gltf.scene;
         model.scale.set(0.01, 0.01, 0.01);
         model.rotation.y = Math.PI; 
@@ -192,15 +192,15 @@ gltfLoader.load(
     },
     (xhr) => {
     },
-    (error) => { //Error message on Console if loading the dark warriro model fails
+    (error) => { 
         console.error("Error While Loading Model:", error);
     }
 );
-
-
-darkWarrior.position.set(0, 0, 3);
+darkWarrior.position.set(0, -0.01, 3);
 darkWarrior.rotation.set(0, Math.PI / 2, 0);
 
+
+//Spell effects
 const spellGroup = new THREE.Group();
 spellGroup.visible = false; 
 darkWarrior.add(spellGroup); 
@@ -221,28 +221,29 @@ const spellMat = new THREE.MeshPhongMaterial({
 
 const innerRingGeometry = new THREE.RingGeometry(1, 1.2, 64);
 const innerRing = new THREE.Mesh(innerRingGeometry, spellMat);
-innerRing.rotation.x = -Math.PI / 2;
+innerRing.rotation.x = -Math.PI / 2,0,0;
 innerRing.position.y = 0.02;
 spellGroup.add(innerRing);
 
 const outerRingGeometry = new THREE.RingGeometry(1.8, 2, 64);
 const outerRing = new THREE.Mesh(outerRingGeometry, spellMat);
-outerRing.rotation.x = -Math.PI / 2;
+outerRing.rotation.x = -Math.PI / 2,0,0;
 outerRing.position.y = 0.02;
 spellGroup.add(outerRing);
 
 const pointerGeometry = new THREE.BoxGeometry(0.05, 4, 0.01);
 const pointer1 = new THREE.Mesh(pointerGeometry, spellMat);
-pointer1.rotation.x = -Math.PI / 2;
-pointer1.rotation.z = Math.PI / 2;
+pointer1.rotation.x = Math.PI / 2,0,Math.PI / 2;
+pointer1.rotation.z = Math.PI / 2,0,Math.PI / 2;
 pointer1.position.y = 0.01;
 spellGroup.add(pointer1);
 
 const pointer2 = new THREE.Mesh(pointerGeometry, spellMat);
-pointer2.rotation.x = -Math.PI / 2;
+pointer2.rotation.x =   Math.PI / 2,0,Math.PI / 2;
 pointer2.position.y = 0.01;
 spellGroup.add(pointer2);
 
+//Movement Controls
 const keys = { w: false, a: false, s: false, d: false, q: false, e: false };
 const moveSpeed = 0.1;
 const rotSpeed = 0.05;
@@ -301,9 +302,9 @@ window.addEventListener('resize', () => {
 
 function animate() {
     renderer.setAnimationLoop(animate);
-
-    if (keys.w) darkWarrior.translateZ(moveSpeed); 
-    if (keys.s) darkWarrior.translateZ(-moveSpeed); 
+    //movement controls for dark warrior
+    if (keys.w) darkWarrior.translateZ(-moveSpeed); 
+    if (keys.s) darkWarrior.translateZ(moveSpeed); 
     if (keys.a) darkWarrior.translateX(moveSpeed); 
     if (keys.d) darkWarrior.translateX(-moveSpeed); 
     if (keys.q) darkWarrior.rotateY(rotSpeed);
@@ -313,7 +314,7 @@ function animate() {
     relativeCamPos.applyMatrix4(darkWarrior.matrixWorld);
     cameraFPV.position.copy(relativeCamPos);
 
-    const relativeTarget = new THREE.Vector3(0, 1.8, 1); 
+    const relativeTarget = new THREE.Vector3(0, 1.8, -1); 
     relativeTarget.applyMatrix4(darkWarrior.matrixWorld);
     cameraFPV.lookAt(relativeTarget);
     
